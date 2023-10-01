@@ -1,7 +1,7 @@
 ---
 # tasks file for srv_setup
-- name: 'Start mzx-dist role'
-  hosts: "mzx-dist"
+- name: 'Start srv_setup role'
+  hosts: "servers"
   become: yes
   roles:
     - { role: set_client, when: ansible_system == 'Linux' }
