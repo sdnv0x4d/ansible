@@ -1,0 +1,23 @@
+---
+# tasks file for srv_setup
+- name: "Install node_exporter"
+  unarchive:
+    src: "{{ node_exporter_pkg }}"
+    dest: /srv/
+    remote_src: yes
+
+- name: AddUser node_exporter
+  ansible.builtin.user:
+    name: node_exporter
+    shell: /bin/false
+    system: yes
+
+- name: Set node_exporter daemon
+  ansible.builtin.template:
+    src: node_exporter.service.j2
+    dest: /etc/systemd/system/node_exporter.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Start node_exporter

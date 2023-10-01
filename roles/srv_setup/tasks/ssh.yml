@@ -1,0 +1,21 @@
+---
+# tasks file for srv_setup
+- name: Set authorized key taken from file
+  ansible.posix.authorized_key:
+    user: '{{ ansible_env.USER }}'
+    state: present
+    key: "{{ lookup('file', item) }}"
+  with_fileglob: files/ssh_keys/*.pub
+
+- name: Prohibit password on SSH-login
+  ansible.builtin.replace:
+    path: /etc/ssh/sshd_config
+    regexp: 'PermitRootLogin yes'
+    replace: 'PermitRootLogin prohibit-password'
+
+- name: Disable password authentication
+  ansible.builtin.replace:
+    path: /etc/ssh/sshd_config
+    regexp: 'PasswordAuthentication yes'
+    replace: 'PasswordAuthentication no'
+  notify: Restart ssh-service

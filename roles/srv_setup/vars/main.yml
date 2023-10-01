@@ -1,0 +1,17 @@
+---
+# vars file for srv_setup
+install_pkgs: "curl,wget,zsh,vim,sudo,mc,htop,git,ca-certificates,gnupg,lsb-release,iptables-persistent,strongswan,xl2tpd"
+vpn_gw_int_ip_mask: "192.168.251.1/32"
+vpn_gw_int_ip: "192.168.251.1"
+vpn_gw_ext_ip: "vpn.example.com"
+remote_ips: "10.0.0.0/24"
+vpn_gw_port: "17/1701"
+vpn_client_ip: "{{ lookup('file', 'files/vpn_ip/' + ansible_hostname) }}"
+encr_algorithm: "aes128-sha256-modp2048"
+connect_encr_algorithm: "aes128-sha256"
+conn_name: "vpn"
+ipsec_key: "s0me_Pa$$sword"
+vpn_pass: "{{ lookup('password', 'files/vpn_creds/' + ansible_hostname + '.pwd length=15') }}"
+node_exporter_port: "9100"
+node_exporter_pkg: "https://github.com/prometheus/node_exporter/releases/download/v1.6.1/node_exporter-1.6.1.linux-amd64.tar.gz"
+node_exporter_version: "1.6.1"

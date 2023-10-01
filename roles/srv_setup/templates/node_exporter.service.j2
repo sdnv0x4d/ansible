@@ -1,0 +1,12 @@
+[Unit]
+Description=Node Exporter
+After=network.target
+
+[Service]
+User=node_exporter
+Group=node_exporter
+Type=simple
+ExecStart=/srv/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter
+
+[Install]
+WantedBy=multi-user.target

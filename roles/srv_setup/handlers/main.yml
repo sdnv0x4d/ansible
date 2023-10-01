@@ -1,0 +1,52 @@
+---
+# handlers file for srv_setup
+- name: Install Docker Engine
+  ansible.builtin.apt:
+    name: 
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    update_cache: yes
+
+- name: edit ohmyzsh theme 
+  ansible.builtin.replace:
+    path: /root/.oh-my-zsh/themes/fox.zsh-theme
+    regexp: '☮'
+    replace: '@'
+
+- name: set ohmyzsh theme
+  ansible.builtin.replace:
+    path: /root/.zshrc
+    regexp: 'ZSH_THEME="robbyrussell"'
+    replace: 'ZSH_THEME="fox"'
+
+- name: set zsh as default
+  shell: chsh -s $(which zsh)
+
+- name: Restart ssh-service
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+    - ssh
+    - sshd
+
+- name: iptables_save
+  ansible.builtin.shell: netfilter-persistent reload && netfilter-persistent save
+
+- name: Start VPN
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: yes
+    state: restarted
+  with_items:
+    - strongswan-starter
+    - xl2tpd
+
+- name: Start node_exporter
+  ansible.builtin.systemd:
+    name: node_exporter
+    daemon_reload: yes
+    state: restarted

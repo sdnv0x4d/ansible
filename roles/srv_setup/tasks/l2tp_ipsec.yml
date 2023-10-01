@@ -1,0 +1,43 @@
+---
+# tasks file for srv_setup
+- name: Set IPsec conf
+  ansible.builtin.template:
+    src: ipsec.conf.j2
+    dest: /etc/ipsec.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Set IPsec secrets
+  ansible.builtin.template:
+    src: ipsec.secrets.j2
+    dest: /etc/ipsec.secrets
+    owner: root
+    group: root
+    mode: '0600'
+
+- name: Set xl2tpd conf
+  ansible.builtin.template:
+    src: xl2tpd.conf.j2
+    dest: /etc/xl2tpd/xl2tpd.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Set xl2tpd options
+  ansible.builtin.template:
+    src: options.l2tpd.j2
+    dest: /etc/ppp/options.{{ conn_name }}.l2tpd
+    owner: root
+    group: root
+    mode: '0600'
+  notify: Start VPN
+
+- name: Set auto add routes
+  ansible.builtin.template:
+    src: vpn.routes.j2
+    dest: /etc/ppp/ip-up.d/{{ conn_name }}.routes
+    owner: root
+    group: root
+    mode: '0755'
+  notify: Start VPN

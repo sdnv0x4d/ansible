@@ -1,0 +1,6 @@
+- name: Install ohmyzsh
+  shell: if [ ! -d "/{{ ansible_env.USER }}/.oh-my-zsh" ]; then printf "y\n" | sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"; fi
+  notify:
+    - set ohmyzsh theme
+    - set zsh as default
+    - edit ohmyzsh theme

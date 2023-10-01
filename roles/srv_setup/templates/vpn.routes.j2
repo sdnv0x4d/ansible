@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [[ "${PPP_LOCAL}" == "{{ vpn_client_ip }}" ]] ; then
+  sleep 1
+  ip route add {{ remote_ips }} via {{ vpn_gw_int_ip }}
+fi
+
+exit $?

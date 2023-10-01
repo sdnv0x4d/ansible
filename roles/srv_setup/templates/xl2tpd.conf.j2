@@ -1,0 +1,8 @@
+[lac {{ conn_name }}]
+lns = {{ vpn_gw_ext_ip }}
+ppp debug = yes
+pppoptfile = /etc/ppp/options.{{ conn_name }}.l2tpd
+length bit = yes
+autodial = yes
+redial = yes
+redial timeout = 30

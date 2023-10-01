@@ -1,0 +1,12 @@
+conn {{ conn_name }}
+  auto=start
+  dpdaction = restart
+  keyexchange=ikev1
+  authby=secret
+  type=transport
+  left=%defaultroute
+  leftprotoport={{ vpn_gw_port }}
+  rightprotoport={{ vpn_gw_port }}
+  right={{ vpn_gw_ext_ip }}
+  ike={{ encr_algorithm }}
+  esp={{ connect_encr_algorithm }}
