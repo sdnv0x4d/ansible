@@ -2,21 +2,21 @@
 # tasks file for srv_setup
 
 - block: # Debian-like servers
-
-  - include: docker.yml
-
-  - include: iptables.yml
-
-  - include: l2tp_ipsec.yml
-
-  - include: node_exporter.yml
-
-  - include: ohmyzsh.yml
-
+  
   - include: packages.yml
 
   - include: repo_keys.yml
 
   - include: ssh.yml
+
+  - include: docker.yml
+
+  - include: node_exporter.yml
+
+  - include: ohmyzsh.yml
+
+  - include: iptables.yml
+
+  - include: l2tp_ipsec.yml
 
   when: ansible_os_family == "Debian"
