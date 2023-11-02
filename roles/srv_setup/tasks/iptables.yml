@@ -1,16 +1,18 @@
 ---
 # tasks file for srv_setup
 - name: Accept to node_exporter from prometheus server via VPN
-  ansible.builtin.iptables:
+  iptables:
     chain: INPUT
-    source: {{ vpn_gw_int_ip_mask }}
-    destination_port: {{ node_exporter_port }}
+    source: "{{ vpn_gw_int_ip_mask }}"
+    destination_port: "{{ node_exporter_port }}"
+    protocol: tcp
     jump: ACCEPT
   notify: iptables_save
 
 - name: Drop all on 9100 port
-  ansible.builtin.iptables:
+  iptables:
     chain: INPUT
-    destination_port: {{ node_exporter_port }}
+    destination_port: "{{ node_exporter_port }}"
+    protocol: tcp
     jump: DROP
   notify: iptables_save
