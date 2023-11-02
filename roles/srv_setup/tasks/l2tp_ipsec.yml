@@ -1,5 +1,30 @@
 ---
 # tasks file for srv_setup
+- name: Password file check
+  ansible.builtin.stat:
+    path: "{{ 'files/vpn_creds/' + ansible_hostname + '.pwd' }}"
+  register: password_file_check
+  ignore_errors: true
+
+- name: Generate random and idempotent password
+  ansible.builtin.set_fact:
+    generated_password: "{{ lookup('password', '/dev/null' + ansible_hostname + '.pwd', length=15, seed=inventory_hostname) }}"
+  when: password_file_check.stat.exists is defined and password_file_check.stat.exists == False
+
+- name: Save the generated password to a local file
+  ansible.builtin.copy:
+    content: "{{ generated_password }}"
+    dest: "/tmp/{{ ansible_hostname }}.pwd"
+  when: password_file_check.stat.exists is defined and password_file_check.stat.exists == False
+
+- name: Fetch the generated password to a files directory
+  ansible.builtin.fetch:
+    src: "/tmp/{{ ansible_hostname }}.pwd"
+    dest: "{{ role_path + '/files/vpn_creds/' + ansible_hostname + '.pwd' }}"
+    flat: yes
+  when: password_file_check.stat.exists is defined and password_file_check.stat.exists == False
+  notify: Delete local password file
+
 - name: Set IPsec conf
   ansible.builtin.template:
     src: ipsec.conf.j2
