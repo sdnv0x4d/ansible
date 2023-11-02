@@ -3,5 +3,6 @@
 - name: 'Start srv_setup role'
   hosts: "servers"
   become: yes
+  gather_facts: yes
   roles:
-    - { role: set_client, when: ansible_system == 'Linux' }
+    - { role: srv_setup, when: ansible_system == 'Linux' }
