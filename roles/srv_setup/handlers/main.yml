@@ -34,7 +34,7 @@
     - sshd
 
 - name: iptables_save
-  ansible.builtin.shell: netfilter-persistent reload && netfilter-persistent save
+  ansible.builtin.shell: "netfilter-persistent reload && netfilter-persistent save"
 
 - name: Start VPN
   ansible.builtin.systemd:
@@ -50,3 +50,8 @@
     name: node_exporter
     daemon_reload: yes
     state: restarted
+
+- name: Delete local password file
+  ansible.builtin.file:
+    path: "/tmp/{{ ansible_hostname }}.pwd"
+    state: absent
