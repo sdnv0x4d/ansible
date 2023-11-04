@@ -12,13 +12,13 @@
 
 - name: edit ohmyzsh theme 
   ansible.builtin.replace:
-    path: /root/.oh-my-zsh/themes/fox.zsh-theme
+    path: "{{ ansible_env.HOME }}/.oh-my-zsh/themes/fox.zsh-theme"
     regexp: '☮'
     replace: '@'
 
 - name: set ohmyzsh theme
   ansible.builtin.replace:
-    path: /root/.zshrc
+    path: "{{ ansible_env.HOME }}/.zshrc"
     regexp: 'ZSH_THEME="robbyrussell"'
     replace: 'ZSH_THEME="fox"'
 
