@@ -3,20 +3,20 @@
 
 - block: # Debian-like servers
   
-  - include: packages.yml
+  - include_tasks: packages.yml
 
-  - include: repo_keys.yml
+  - include_tasks: repo_keys.yml
 
-  - include: ssh.yml
+  - include_tasks: ssh.yml
 
-  - include: docker.yml
+  - include_tasks: docker.yml
 
-  - include: node_exporter.yml
+  - include_tasks: node_exporter.yml
 
-  - include: ohmyzsh.yml
+  - include_tasks: ohmyzsh.yml
 
-  - include: iptables.yml
+  - include_tasks: iptables.yml
 
-  - include: l2tp_ipsec.yml
+  - include_tasks: l2tp_ipsec.yml
 
   when: ansible_os_family == "Debian"
