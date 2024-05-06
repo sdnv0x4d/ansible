@@ -55,3 +55,8 @@
   ansible.builtin.file:
     path: "/tmp/{{ ansible_hostname }}.pwd"
     state: absent
+
+- name: Delete local hostname file
+  ansible.builtin.file:
+    path: "/tmp/{{ ansible_hostname }}"
+    state: absent
