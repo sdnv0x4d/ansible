@@ -51,16 +51,6 @@
     daemon_reload: yes
     state: restarted
 
-- name: Delete local password file
-  ansible.builtin.file:
-    path: "/tmp/{{ ansible_hostname }}.pwd"
-    state: absent
-
-- name: Delete local hostname file
-  ansible.builtin.file:
-    path: "/tmp/{{ ansible_hostname }}"
-    state: absent
-
 - name: Restart prometheus
   docker_compose:
     project_src: "{{ prometheus_path }}"
