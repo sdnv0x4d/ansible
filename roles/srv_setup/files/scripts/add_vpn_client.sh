@@ -20,8 +20,8 @@ nextip(){
 set_new_ip(){
   local host=$1
   local hostpass=$2
-  nextip $(ssh ${username}@$ip_mt -o "StrictHostKeyChecking no" -p 22 "/ppp/secret/print proplist=remote-address terse" | grep -oP 'address=\K.*' | sort -k 1n | tail -n 1)                                                         # Take biggest IP from PPP/secret list and make next ip
-  ssh ${username}@$ip_mt -o "StrictHostKeyChecking no" -p 22 "/ppp/secret/add name=$host service=l2tp profile=profile1 remote-address=$NEXT_IP password=$hostpass; /ip/dns/static/add name=$host.$domain type=A address=$NEXT_IP"   # Add new host with new IP and new pass
+  nextip $(ssh ${username}@$ip_mt -o "StrictHostKeyChecking no" -p 22 "/ppp/secret/print proplist=remote-address terse" | grep -oP 'address=\K.*' | sort -k 1n | tail -n 1)                                                             # Take biggest IP from PPP/secret list and make next ip
+  ssh ${username}@$ip_mt -o "StrictHostKeyChecking no" -p 22 "/ppp/secret/add name=$host service=l2tp profile=profile1 remote-address=$NEXT_IP password=$hostpass; /ip/dns/static/add name=$host-int.$domain type=A address=$NEXT_IP"   # Add new host with new IP and new pass, also add internal DNS-record with "-int" host postfix
   echo $NEXT_IP > $clients_path/$host
 }
 

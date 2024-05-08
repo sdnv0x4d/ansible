@@ -25,7 +25,7 @@
 - name: Add new server to prometheus
   ansible.builtin.lineinfile:
     path: "{{ prometheus_config }}"
-    line: "    - targets: ['{{ ansible_hostname }}:{{ node_exporter_port }}']"
+    line: "    - targets: ['{{ ansible_hostname }}-int:{{ node_exporter_port }}']"
     create: yes
   delegate_to: localhost
   notify: Restart prometheus
