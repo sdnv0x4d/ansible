@@ -31,7 +31,7 @@
     delegate_to: localhost
 
   - name: "Start add_vpn_client local script"
-    shell: "{{ role_path + '/files/scripts/add_vpn_client.sh ' + role_path + '/files/vpn_ip ' + role_path + '/files/vpn_creds' }}"
+    shell: "{{ role_path + '/files/scripts/add_vpn_client.sh ' + role_path + '/files/vpn_ip ' + role_path + '/files/vpn_creds' + mt_ip + mt_username + domain }}"
     ignore_errors: true
     delegate_to: localhost
   when: hostname_file_check.stat.exists is defined and hostname_file_check.stat.exists == False
