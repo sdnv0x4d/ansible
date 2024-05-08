@@ -1,6 +1,9 @@
 ---
 # vars file for srv_setup
 install_pkgs: "curl,wget,zsh,vim,sudo,mc,htop,git,ca-certificates,gnupg,lsb-release,iptables-persistent,strongswan,xl2tpd"
+mt_ip: "192.168.250.1"
+mt_username: "admin"
+domain: "example.com"
 vpn_gw_int_ip_mask: "192.168.251.1/32"
 vpn_gw_int_ip: "192.168.251.1"
 vpn_gw_ext_ip: "vpn.example.com"

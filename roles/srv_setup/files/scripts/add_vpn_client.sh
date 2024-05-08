@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-ip_mt="" # IP of Mikrotik - VPN GW
+ip_mt=$3 # IP of Mikrotik - VPN GW
 COLOR0="echo -e \\033[1;32m" # Green color
 COLOR1="echo -e \\033[0;39m" # Standart color
-username="" # SSH user
-domain=example.com
+username=$4 # SSH user
+domain=$5
 
 clients_path=$1
 clients_list="$(ls $1)"
