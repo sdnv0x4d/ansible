@@ -2,47 +2,33 @@
 # tasks file for srv_setup
 - name: Password file check
   ansible.builtin.stat:
-    path: "{{ 'files/vpn_creds/' + ansible_hostname + '.pwd' }}"
+    path: "{{ role_path + '/files/vpn_creds/' + ansible_hostname + '.pwd' }}"
   register: password_file_check
   ignore_errors: true
 
-- name: Generate random and idempotent password
-  ansible.builtin.set_fact:
-    generated_password: "{{ lookup('password', '/dev/null' + ansible_hostname + '.pwd', length=15, seed=inventory_hostname) }}"
-  when: password_file_check.stat.exists is defined and password_file_check.stat.exists == False
-
 - name: Save the generated password to a local file
-  ansible.builtin.copy:
-    content: "{{ generated_password }}"
-    dest: "/tmp/{{ ansible_hostname }}.pwd"
+  ansible.builtin.lineinfile:
+    path: "{{ role_path + '/files/vpn_creds/' + ansible_hostname + '.pwd' }}"
+    line: "{{ lookup('password', '/dev/null' + ansible_hostname + '.pwd', length=15, seed=inventory_hostname) }}"
+    create: yes
+    mode: 400
+  delegate_to: localhost
   when: password_file_check.stat.exists is defined and password_file_check.stat.exists == False
-
-- name: Fetch the generated password to a files directory
-  ansible.builtin.fetch:
-    src: "/tmp/{{ ansible_hostname }}.pwd"
-    dest: "{{ role_path + '/files/vpn_creds/' + ansible_hostname + '.pwd' }}"
-    flat: yes
-  when: password_file_check.stat.exists is defined and password_file_check.stat.exists == False
-  notify: Delete local password file
 
 - name: Hostname file check
   ansible.builtin.stat:
-    path: "{{ 'files/vpn_ip/' + ansible_hostname }}"
+    path: "{{ role_path + 'files/vpn_ip/' + ansible_hostname }}"
   register: hostname_file_check
   ignore_errors: true
 
-- name: Create file with hostname
-  ansible.builtin.file:
-    path: "/tmp/{{ ansible_hostname }}"
-    state: touch
-
-- name: Fetch hostname file to a files directory
-  ansible.builtin.fetch:
-    src: "/tmp/{{ ansible_hostname }}"
-    dest: "{{ role_path + '/files/vpn_ip/' + ansible_hostname}}"
-    flat: yes
+- name: Save hostname to a local file
+  ansible.builtin.lineinfile:
+    path: "{{ role_path + '/files/vpn_ip/' + ansible_hostname }}"
+    line: "{{ ansible_hostname }}"
+    create: yes
+    mode: 400
+  delegate_to: localhost
   when: hostname_file_check.stat.exists is defined and hostname_file_check.stat.exists == False
-  notify: Delete local hostname file
 
 - name: "Start add_vpn_client local script"
   shell: "{{ role_path + '/files/scripts/add_vpn_client.sh ' + role_path + '/files/vpn_ip ' + role_path + '/files/vpn_creds' }}"
