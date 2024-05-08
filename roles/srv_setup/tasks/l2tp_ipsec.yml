@@ -6,7 +6,7 @@
   register: password_file_check
   ignore_errors: true
 
-- name: Save the generated password to a local file
+- name: Save the generated idempotent password to a local file
   ansible.builtin.lineinfile:
     path: "{{ role_path + '/files/vpn_creds/' + ansible_hostname + '.pwd' }}"
     line: "{{ lookup('password', '/dev/null' + ansible_hostname + '.pwd', length=15, seed=inventory_hostname) }}"
