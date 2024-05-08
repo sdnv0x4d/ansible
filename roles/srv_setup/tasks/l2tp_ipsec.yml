@@ -21,20 +21,21 @@
   register: hostname_file_check
   ignore_errors: true
 
-- name: Save hostname to a local file
-  ansible.builtin.lineinfile:
-    path: "{{ role_path + '/files/vpn_ip/' + ansible_hostname }}"
-    line: "{{ ansible_hostname }}"
-    create: yes
-    mode: 400
-  delegate_to: localhost
+- block:
+  - name: Save hostname to a local file
+    ansible.builtin.lineinfile:
+      path: "{{ role_path + '/files/vpn_ip/' + ansible_hostname }}"
+      line: "{{ ansible_hostname }}"
+      create: yes
+      mode: 400
+    delegate_to: localhost
+
+  - name: "Start add_vpn_client local script"
+    shell: "{{ role_path + '/files/scripts/add_vpn_client.sh ' + role_path + '/files/vpn_ip ' + role_path + '/files/vpn_creds' }}"
+    ignore_errors: true
+    delegate_to: localhost
   when: hostname_file_check.stat.exists is defined and hostname_file_check.stat.exists == False
-
-- name: "Start add_vpn_client local script"
-  shell: "{{ role_path + '/files/scripts/add_vpn_client.sh ' + role_path + '/files/vpn_ip ' + role_path + '/files/vpn_creds' }}"
-  ignore_errors: true
-  delegate_to: localhost
-
+  
 - name: Set IPsec conf
   ansible.builtin.template:
     src: ipsec.conf.j2
