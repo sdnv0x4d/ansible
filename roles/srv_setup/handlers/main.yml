@@ -60,3 +60,12 @@
   ansible.builtin.file:
     path: "/tmp/{{ ansible_hostname }}"
     state: absent
+
+- name: Restart prometheus
+  docker_compose:
+    project_src: "{{ prometheus_path }}"
+    services:
+      - "{{ prometheus_service_name }}"
+    build: no
+    restarted: yes
+  delegate_to: localhost
