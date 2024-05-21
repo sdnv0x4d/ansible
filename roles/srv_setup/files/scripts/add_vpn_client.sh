@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 
-ip_mt=$3 # IP of Mikrotik - VPN GW
 COLOR0="echo -e \\033[1;32m" # Green color
 COLOR1="echo -e \\033[0;39m" # Standart color
-username=$4 # SSH user
-domain=$5
 
 clients_path=$1
 clients_list="$(ls $1)"
 clients_pass_path=$2
+ip_mt=$3 # IP of Mikrotik - VPN GW
+username=$4 # SSH user
+domain=$5
+host=$6
 
 nextip(){
   IP=$1
@@ -22,18 +23,15 @@ set_new_ip(){
   local hostpass=$2
   nextip $(ssh ${username}@$ip_mt -o "StrictHostKeyChecking no" -p 22 "/ppp/secret/print proplist=remote-address terse" | grep -oP 'address=\K.*' | sort -k 1n | tail -n 1)                                                             # Take biggest IP from PPP/secret list and make next ip
   ssh ${username}@$ip_mt -o "StrictHostKeyChecking no" -p 22 "/ppp/secret/add name=$host service=l2tp profile=profile1 remote-address=$NEXT_IP password=$hostpass; /ip/dns/static/add name=$host-int.$domain type=A address=$NEXT_IP"   # Add new host with new IP and new pass, also add internal DNS-record with "-int" host postfix
-  echo $NEXT_IP > $clients_path/$host
+  echo $NEXT_IP > $clients_path
 }
 
 main(){
-  for host in ${clients_list[*]}
-  do
-    if [ ! -s $clients_path/$host ];                        # If host already with IP - skip
-    then
-      local hostpass="$(<"$clients_pass_path/$host.pwd")"   # Take hosts new pass from pass_path
-      set_new_ip $host $hostpass
-    fi
-  done
+  if [ ! -s $clients_path ];                    # If host already with IP - skip
+  then
+    local hostpass="$(<"$clients_pass_path")"   # Take hosts new pass from pass_path
+    set_new_ip $host $hostpass
+  fi
 }
 
 main
